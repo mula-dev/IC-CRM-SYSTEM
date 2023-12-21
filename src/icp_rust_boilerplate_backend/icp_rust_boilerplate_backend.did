@@ -1,0 +1,40 @@
+type Customer = record {
+  id : nat64;
+  name : text;
+  created_at : nat64;
+  email : text;
+  phone : text;
+};
+type Error = variant {
+  InvalidInput : record { msg : text };
+  NotFound : record { msg : text };
+};
+type Interaction = record {
+  id : nat64;
+  updated_at : opt nat64;
+  content : text;
+  created_at : nat64;
+  customer_id : nat64;
+  interaction_type : text;
+};
+type InteractionPayload = record {
+  content : text;
+  customer_id : nat64;
+  interaction_type : text;
+};
+type Result = variant { Ok : Customer; Err : Error };
+type Result_1 = variant { Ok : Interaction; Err : Error };
+type SearchResult = record { total_items : nat64; items : vec Customer };
+service : {
+  add_customer : (text, text, text) -> (Result);
+  add_interaction : (InteractionPayload) -> (Result_1);
+  delete_customer : (nat64) -> (Result);
+  delete_interaction : (nat64) -> (Result_1);
+  get_customer : (nat64) -> (Result) query;
+  get_interaction : (nat64) -> (Result_1) query;
+  search_customers : (opt text, opt text, opt text, nat64, nat64) -> (
+      SearchResult,
+    ) query;
+  update_customer : (nat64, text, text, text) -> (Result);
+  update_interaction : (nat64, InteractionPayload) -> (Result_1);
+}
